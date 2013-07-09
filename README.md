@@ -12,3 +12,6 @@ This repo is for tracking code development of Bloomcase, my MFA thesis work and 
 3. Integrate prototype code into Drupal installation located here: http://meganerinmillerdesign.com/bc-drpl/
 4. Develop AJAX-driven forms into the Drupal instance to allow for real-time adding/removing/detaching nodes on the map.
 
+##Contact Information
+megan@meganerinmiller.com
+@meganerinmiller
