@@ -1,0 +1,50 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {font-family: Verdana, Arial, sans-serif; font-size: 11px;}
+
+/* ------- Hover animation ------ */
+@keyframes circleHover { 
+	from {fill:transparent; stroke:transparent; stroke-width:0px;}
+	to {fill:rgba(0,0,0,0.1); stroke:#352C2A; stroke-width:1px;}
+}
+
+@-moz-keyframes circleHover /* Firefox */ {
+	from {fill:transparent; stroke:transparent; stroke-width:0px;}
+	to {fill:rgba(0,0,0,0.1); stroke:#352C2A; stroke-width:1px;}
+}
+
+@-webkit-keyframes circleHover /* Safari and Chrome */ {
+	from {fill:transparent; stroke:transparent; stroke-width:0px;}
+	to {fill:rgba(0,0,0,0.1); stroke:#352C2A; stroke-width:1px;}
+}
+
+@-o-keyframes circleHover /* Opera */ {
+	from {fill:transparent; stroke:transparent; stroke-width:0px;}
+	to {fill:rgba(0,0,0,0.1); stroke:#352C2A; stroke-width:1px;}
+} 
+
+.circle {fill:transparent; stroke:transparent; stroke-width:0px;}
+.circle:hover {
+	/* call animation */
+	animation: circleHover 1s;
+	-moz-animation: circleHover 1s; /* Firefox */
+	-webkit-animation: circleHover 1s; /* Safari and Chrome */
+	-o-animation: circleHover 1s; /* Opera */
+	fill:rgba(0,0,0,0.1); stroke:#352C2A; stroke-width:1px; /* defaults */
+}
+
+.idea, .draft, .inspiration, .final, .sketch {fill:#000000; stroke:#352C2A; stroke-width:0px;}
+.idea:hover, .draft:hover, .inspiration:hover, .final:hover, .sketch:hover {stroke-width:2px;}
+.idea {fill:#C69722;}
+.draft {fill:#628C31;}
+.inspiration {fill:#874C81;}
+.final {fill:#352C2A;}
+.sketch {fill:#2D83A5;}
+
+.link {stroke:#352C2A; fill:none; stroke-width:2px;}
+.node text { pointer-events: none; font: 10px sans-serif; fill:#FFF; }
+svg {border:1px solid black;}
+
+#info {width:200px; display:block; position: absolute; top:0; left:0; background-color:white; border:1px solid black; padding:20px;}
+.node-title {display:block; font-size: 1.1em; font-weight: bold;}
