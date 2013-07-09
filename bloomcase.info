@@ -1,0 +1,40 @@
+name = Bloomcase
+base theme = open_framework
+description = Theme for Bloomcase web application, based on the Open Framework theme. Created by Megan Erin Miller.
+core = 7.x
+version = 1.0
+
+stylesheets[all][] = css/bloomcase.css
+scripts[] = js/bloomcase.js
+scripts[] = js/d3.v2.min.js
+
+regions[header] = Header
+regions[navigation] = Navigation
+regions[search_box] = Search Box
+regions[highlighted] = Highlighted
+regions[help] = Help
+regions[sidebar_first] = First sidebar
+regions[sidebar_second] = Second sidebar
+regions[footer] = Footer
+
+regions[main_top] = Main: Top
+regions[main_upper] = Main: Upper
+regions[content_top] = Content: Top
+regions[content_upper] = Content: Upper
+regions[content] = Content: Body
+regions[content_row2] = Content: 2-column flow
+regions[content_col2-1] = Content: 2-column stacked (1)
+regions[content_col2-2] = Content: 2-column stacked (2)
+regions[content_row3] = Content: 3-column flow
+regions[content_col3-1] = Content: 3-column stacked (1)
+regions[content_col3-2] = Content: 3-column stacked (2)
+regions[content_col3-3] = Content: 3-column stacked (3)
+regions[content_row4] = Content: 4-column flow
+regions[content_col4-1] = Content: 4-column stacked (1)
+regions[content_col4-2] = Content: 4-column stacked (2)
+regions[content_col4-3] = Content: 4-column stacked (3)
+regions[content_col4-4] = Content: 4-column stacked (4)
+regions[content_lower] = Content: Lower
+regions[content_bottom] = Content: Bottom
+regions[main_lower] = Main: Lower
+regions[main_bottom] = Main: Bottom

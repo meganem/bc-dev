@@ -1,0 +1,15 @@
+body {font-family: Verdana, Arial, sans-serif; font-size: 11px;}
+
+.Idea:hover, .Draft:hover, .Inspiration:hover, .Final:hover, .Sketch:hover {fill:#000000;}
+.Idea {fill:#C69722;}
+.Draft {fill:#628C31;}
+.Inspiration {fill:#874C81;}
+.Final {fill:#352C2A;}
+.Sketch {fill:#2D83A5;}
+
+.link {stroke:#352C2A; fill:none; stroke-width:2px;}
+.node text { pointer-events: none; font: 10px sans-serif; fill:#FFF; }
+svg {border:1px solid black;}
+
+#info {width:200px; display:block; background-color:white; border:1px solid black; padding:20px;}
+.node-title {display:block; font-size: 1.1em; font-weight: bold;}
