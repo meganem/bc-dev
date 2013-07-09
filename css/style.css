@@ -1,0 +1,155 @@
+@charset "UTF-8";
+/* CSS Document */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+
+body {
+	left:auto !important;
+}
+body, .ui-body-c, .ui-body-c input, .ui-body-c select, .ui-body-c textarea, .ui-body-c button, .ui-bar-a, .ui-bar-a input, .ui-bar-a select, .ui-bar-a textarea, .ui-bar-a button {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 500;
+	font-size: 0.95em;
+	text-shadow:none;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 600;
+}
+
+body .ui-li .ui-li-desc {
+	white-space: normal;
+}
+
+body .ui-footer .ui-title {
+	white-space: normal;
+}
+
+.logo {
+	text-align: center;
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+.ui-input-text {
+	font-size: 1.1em;
+	font-weight: 500;
+	border-color:#3B342D;
+}
+
+.ui-content {
+	color:#3B342D;
+}
+.float-right { 
+	float:right;
+}
+.float-left { 
+	float:left;
+}
+.ui-btn-text {
+	top:6px;
+}
+.ui-btn {
+	background:#ffffff;
+	border-color:#3B342D;
+	box-shadow: none;
+	text-shadow:none;
+}
+.ui-header .ui-btn-inner {
+	padding-top: 0;
+}
+#sidr .ui-btn {
+	margin:0 1em 1em 1em;
+}
+.ui-btn-hover-c:visited, .ui-btn-hover-c:hover, .ui-btn-hover-c a.ui-link-inherit {
+	color:#FFFFFF;
+	background:#13BAED;
+}
+.ui-mobile .ui-header, .ui-mobile .ui-footer {
+	background: #ffffff;
+	color: #000000;
+	text-shadow: none;
+	border-color:#3B342D;
+}
+.ui-mobile .ui-footer {
+	padding:0 1em;
+}
+.ui-header > .ui-btn, .ui-footer > .ui-btn {
+	box-shadow: none;
+	border: none;
+	background: none;
+	text-shadow: none;
+	color: #000000;
+}
+.ui-header > .ui-btn:hover, .ui-footer > .ui-btn:hover {
+	color:#13BAED;
+}
+.ui-header > .ui-btn:focus, .ui-footer > .ui-btn:focus {
+	color:#000000;
+}
+
+
+/* ----- Map styles ----- */
+.project .ui-content {
+	padding:0;
+	overflow: visible;
+}
+.project.ui-page {
+	width:auto;
+}
+.Idea:hover, 
+.Draft:hover, 
+.Inspiration:hover, 
+.Final:hover, 
+.Sketch:hover {
+	fill:#000000;
+}
+.Idea {
+	fill:#C69722;
+}
+.Draft {
+	fill:#628C31;
+}
+.Inspiration {
+	fill:#874C81;
+}
+.Final {
+	fill:#352C2A;
+}
+.Sketch {
+	fill:#2D83A5;
+}
+
+.link {
+	stroke:#352C2A; 
+	fill:none; 
+	stroke-width:2px;
+}
+.node text { 
+	pointer-events: none; 
+	font: 10px sans-serif; 
+	fill:#FFF; 
+}
+svg {
+}
+
+#info {
+	position: fixed;
+	top: auto;
+	bottom: 4em;
+	width:100%;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	box-sizing:border-box; 
+	display:block; 
+	background-color:white; 
+	border:1px solid black; 
+	padding:20px;
+}
+.node-title {
+	display:block; 
+	font-size: 1.1em; 
+	font-weight: bold;
+}
+
+
+
