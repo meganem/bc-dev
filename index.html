@@ -398,13 +398,18 @@
             var link = svg.selectAll(".link")
                 .data(links) // target links data
                 .enter().append("path")
-                .attr("class", "link");
+                .attr("class", "link")
+		.style("opacity", 0);
+
+	    link.transition().delay(1000).duration(500).style("opacity", 1)
+
     
             var node = svg.selectAll(".node")
                 .data(finalNodes) // target nodes data
                 .enter().append("g")
                 .attr("class", "node")
-                .call(force.drag);
+                .call(force.drag)
+		.style("opacity", 0);
     
             node.append("path")
                 .attr("class", function(d){ return d.kind; })
@@ -418,6 +423,8 @@
             node.on("click", function(d) {
                 nodePopup(d);
             })
+	    
+	    node.transition().delay(1000).duration(500).style("opacity", 1)
     
             function nodePopup(data) {
                 var info = d3.select("#info").html("");
