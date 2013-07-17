@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Testing linking to Drupal Json</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
-<script src="jquery-1.10.2.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="d3.v2.min.js"></script>
 </head>
 
@@ -18,8 +18,10 @@
 
 <script>
 	// get the json
-	var jsonPath = "8.json";
-	var jsonEvolvedTo = "evolvedTo.json";
+//	var jsonPath = "http://www.meganerinmiller.com/bc-drpl/json/8";
+//	var jsonEvolvedTo = "http://www.meganerinmiller.com/bc-drpl/json/8/evolvedTo";
+	var jsonPath = "8";
+	var jsonEvolvedTo = "evolvedTo";
 
 	// variables for processing data
         var format = d3.time.format("%Y-%m-%d-%H-%M-%S");
@@ -28,6 +30,23 @@
         var links = [];
         var nodes = [];
         var eTo = [];
+	
+	var shapeMeasures = {
+	    Inspiration: {myWidth: 27, myHeight: 27,
+	    pathd: "M24.248,26.755H2.833c-1.404,0-2.548-1.143-2.548-2.548V2.793c0-1.405,1.144-2.548,2.548-2.548h21.415 c1.405,0,2.549,1.143,2.549,2.548v21.414C26.796,25.612,25.653,26.755,24.248,26.755z"
+                            },
+	    Final: {myWidth: 47.4, myHeight: 47.4,
+	    pathd: "M47.392,44.295c0,1.709-1.388,3.096-3.097,3.096H3.096C1.386,47.391,0,46.004,0,44.295V3.096 C0,1.386,1.386,0,3.096,0h41.199c1.709,0,3.097,1.386,3.097,3.096V44.295z"
+},
+	    Draft: {myWidth: 35, myHeight: 34.8,
+            pathd: "M31.42,34.758H3.341C1.5,34.758,0,33.26,0,31.419V3.341C0,1.499,1.5,0,3.341,0H31.42 c1.843,0,3.342,1.499,3.342,3.341v28.079C34.762,33.26,33.263,34.758,31.42,34.758z"
+	    },
+	    Sketch: {myWidth: 26.5, myHeight: 26.5,
+	    pathd: "M23.963,26.51H2.548C1.143,26.51,0,25.367,0,23.962V2.548C0,1.143,1.143,0,2.548,0h21.415 c1.405,0,2.549,1.143,2.549,2.548v21.414C26.511,25.367,25.368,26.51,23.963,26.51z"
+	    },
+	    Idea: {myWidth: 33.8, myHeight: 38.6},
+	    pathd: "M16.897,0C14.483,7.241,7.241,16.896,0,19.311c7.241,2.414,14.483,12.069,16.897,19.312 c2.414-7.241,9.654-16.896,16.896-19.312C26.551,16.896,19.311,7.241,16.897,0z"
+	}
     
         // reusable function for converting nested elements from string to int
         function nestedToInt(myNest) {
@@ -94,7 +113,6 @@
                 myNode.myLongestPath = 0;
                 
             }) // * END loop through data *
-            console.log ("NODES:", nodes);
             console.log ("ORIGIN NODES ARE:", originNodes);
             console.log ("END NODES ARE:", endNodes);
     
@@ -273,8 +291,8 @@
                 // which column am I in?
                 var myColumn = nodes[i].node.colGroup;
                 var myNid = nodes[i].node.nid;
-                console.log("* * * * * * * my NID", myNid);
-                console.log("myColumn", myColumn);
+                //console.log("* * * * * * * my NID", myNid);
+                //console.log("myColumn", myColumn);
                 // get how many total are in this column and calculate column height
                 var myColHeight = (columnCounts[myColumn-1])*(gridSpacing/2);
                 // get position of this node in context of column array
@@ -391,54 +409,10 @@
             node.append("path")
                 .attr("class", function(d){ return d.kind; })
                 .attr("d", function(d) {
-                    switch(d.kind) {
-                        case "Inspiration":
-                            return "M24.248,26.755H2.833c-1.404,0-2.548-1.143-2.548-2.548V2.793c0-1.405,1.144-2.548,2.548-2.548h21.415 c1.405,0,2.549,1.143,2.549,2.548v21.414C26.796,25.612,25.653,26.755,24.248,26.755z";
-                            break;
-                        case "Final":
-                            return "M47.392,44.295c0,1.709-1.388,3.096-3.097,3.096H3.096C1.386,47.391,0,46.004,0,44.295V3.096 C0,1.386,1.386,0,3.096,0h41.199c1.709,0,3.097,1.386,3.097,3.096V44.295z";
-                            break;
-                        case "Draft":
-                            return "M31.42,34.758H3.341C1.5,34.758,0,33.26,0,31.419V3.341C0,1.499,1.5,0,3.341,0H31.42 c1.843,0,3.342,1.499,3.342,3.341v28.079C34.762,33.26,33.263,34.758,31.42,34.758z";
-                            break;
-                        case "Sketch":
-                            return "M23.963,26.51H2.548C1.143,26.51,0,25.367,0,23.962V2.548C0,1.143,1.143,0,2.548,0h21.415 c1.405,0,2.549,1.143,2.549,2.548v21.414C26.511,25.367,25.368,26.51,23.963,26.51z";
-                            break;
-                        case "Idea":
-                            var myWidth = 34; 
-                            var myHeight = 39;
-                            return "M16.897,0C14.483,7.241,7.241,16.896,0,19.311c7.241,2.414,14.483,12.069,16.897,19.312 c2.414-7.241,9.654-16.896,16.896-19.312C26.551,16.896,19.311,7.241,16.897,0z";
-                            break;
-                    }
+		    return shapeMeasures[d.kind]["pathd"]
             })
             .attr("transform", function(d) { 
-                switch(d.kind) {
-                        case "Inspiration":
-                            var myWidth = 27; 
-                            var myHeight = 27;
-                            return "translate(" + (-1*(myWidth/2)) + "," + (-1*(myHeight/2)) + ")"; 
-                            break;
-                        case "Final":
-                            var myWidth = 47.4; 
-                            var myHeight = 47.4;
-                            return "translate(" + (-1*(myWidth/2)) + "," + (-1*(myHeight/2)) + ")"; 
-                            break;
-                        case "Draft":
-                            var myWidth = 35; 
-                            var myHeight = 34.8;
-                            return "translate(" + (-1*(myWidth/2)) + "," + (-1*(myHeight/2)) + ")"; 
-                            break;
-                        case "Sketch":
-                            var myWidth = 26.5; 
-                            var myHeight = 26.5;
-                            return "translate(" + (-1*(myWidth/2)) + "," + (-1*(myHeight/2)) + ")"; 
-                            break;
-                        case "Idea":
-                            var myWidth = 33.8; 
-                            var myHeight = 38.6;
-                            return "translate(" + (-1*(myWidth/2)) + "," + (-1*(myHeight/2)) + ")"; 
-                            break;
-                    }
+		    return "translate(" + (-1*(shapeMeasures[d.kind]["myWidth"]/2)) + "," + (-1*(shapeMeasures[d.kind]["myHeight"]/2)) + ")"; 
             });
     
             node.on("click", function(d) {
