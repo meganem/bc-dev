@@ -459,6 +459,11 @@
                     // TO DO: round to nearest grid position
                     finalNodes[i].x = nodesX;
                     finalNodes[i].px = nodesX;
+		    if (d3.selectAll("g.node").filter(function(d) {return d.colGroup == colPos ? this : null})[0].length == 1) {
+			finalNodes[i].y = 300;
+			finalNodes[i].py = 300;
+			
+		    }
                 }
     
                 // draw curves
