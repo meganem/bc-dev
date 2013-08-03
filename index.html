@@ -47,6 +47,11 @@
 	    pathd: "M16.897,0C14.483,7.241,7.241,16.896,0,19.311c7.241,2.414,14.483,12.069,16.897,19.312 c2.414-7.241,9.654-16.896,16.896-19.312C26.551,16.896,19.311,7.241,16.897,0z"
 	    }
 	}
+	
+	shapeHierarchy = {Inspiration: 5, Draft: 1, Final: 2, Sketch: 3, Idea: 4};
+	
+	columnNumber = 0;
+        centerLine = 350;
     
         // reusable function for converting nested elements from string to int
         function nestedToInt(myNest) {
@@ -212,6 +217,8 @@
             // run the countSteps function
             countSteps(originNodes, 1, []);
             console.log("Number of columns on my map:", longestCount+1);
+	    
+	    columnNumber = longestCount+1;
     
     
             // * * * FIX ORIGIN NODE POSITIONS * * * 
@@ -369,7 +376,7 @@
             console.log("LINKS:", links);
     
             // generate simpler data
-            var finalNodes = [];
+            finalNodes = [];
             for (var i=0; i<nodes.length; i++) {
                 finalNodes[i] = nodes[i].node;
             }
@@ -383,7 +390,7 @@
                 .attr("width", chartWidth)
                 .attr("height", chartHeight);
     
-            var force = d3.layout.force()
+            force = d3.layout.force()
                 .gravity(.06)
                 .distance(100)
                 .charge(-2000)
@@ -453,15 +460,15 @@
             force.on("tick", function() {
     
                 // Re-set x position for each node
-                for (var i=0; i<finalNodes.length; i++) { 
+                for (var i=0; i < finalNodes.length; i++) { 
                     colPos = finalNodes[i].colGroup;
                     var nodesX = (chartWidth/2 - mapWidth/2) + ((colPos - 1) * gridSpacing);
                     // TO DO: round to nearest grid position
                     finalNodes[i].x = nodesX;
                     finalNodes[i].px = nodesX;
 		    if (d3.selectAll("g.node").filter(function(d) {return d.colGroup == colPos ? this : null})[0].length == 1) {
-			finalNodes[i].y = 300;
-			finalNodes[i].py = 300;
+			finalNodes[i].y = centerLine;
+			finalNodes[i].py = centerLine;
 			
 		    }
                 }
@@ -480,6 +487,7 @@
                 });
     
                 node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+		hierarchicalLayout();
             });
     
         } // * END parseData function *
@@ -488,7 +496,34 @@
         d3.json(jsonEvolvedTo, parseEvolvedTo);
         // process the nodes data
         d3.json(jsonPath, parseData);
-    
+	
+function hierarchicalLayout() {
+    for (x in finalNodes) {
+	finalNodes[x].fixed = true;
+    }
+    for (var i=1; i <= columnNumber; i++) {
+	var thisCol = [];
+	for (x in finalNodes) {
+	    if (finalNodes[x].colGroup == i) {
+		thisCol.push(finalNodes[x]);
+	    }
+	}
+	thisCol.sort(function(a, b) {
+	    return shapeHierarchy[a.kind] - shapeHierarchy[b.kind];
+	});
+	for (x in thisCol) {
+	    if (x == 0) {
+		thisCol[x].py = centerLine;
+		thisCol[x].y = centerLine;
+	    }
+	    else {
+		thisCol[x].py = centerLine + (((x%2 - .5) * 2) * (Math.round(x / 2)) * 40)
+		thisCol[x].y = centerLine + (((x%2 - .5) * 2) * (Math.round(x / 2)) * 40)
+	    }
+	}
+    }
+}
+
     </script>
     
     
