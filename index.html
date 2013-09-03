@@ -387,6 +387,7 @@
     
             // draw the SVG
             var svg = d3.select("#timeline")
+		.attr("id", "mainSVG")
                 .attr("width", chartWidth)
                 .attr("height", chartHeight);
     
@@ -415,7 +416,9 @@
                 .data(finalNodes) // target nodes data
                 .enter().append("g")
                 .attr("class", "node")
-                .call(force.drag)
+//                .call(force.drag)
+		.on("mousedown", startMove)
+		.on("mouseup", endMove)
 		.style("opacity", 0);
     
             node.append("path")
@@ -524,6 +527,77 @@ function hierarchicalLayout() {
     }
 }
 
+function startMove(d,i) {
+    if (!d3.select("#genNode").empty()) {return;}
+    var curMouse = d3.mouse(this.parentNode);
+    d3.select("#mainSVG").on("mousemove", moveGenNode)
+    d3.select("#mainSVG").on("mouseup", endMove)
+    d3.select("#mainSVG").append("line")
+    .attr("id", "genLine")
+    .attr("x1", d.x)
+    .attr("y1", d.y)
+    .attr("x2", curMouse[0])
+    .attr("y2", curMouse[1])
+    .style("stroke", "gray")
+    .style("stroke-width", 3)
+    d3.select("#mainSVG").append("g")
+    .attr("id","genNode")
+    .on("click", function() {d3.select("#genNode").remove();d3.select("#genLine").remove()})
+    .attr("transform","translate("+curMouse[0]+","+curMouse[1]+")").append("circle").attr("r","1").style("fill", "lightgray").style("opacity", 0).transition().duration(300).style("opacity",1).attr("r",20)
+
+}
+
+function endMove(d,i) {
+    if (!d3.select(".options").empty()) {return;}
+
+    var curMouse = d3.mouse(this);
+
+    d3.select("#mainSVG").on("mousemove", null)
+    
+    d3.select("#genNode")
+    .append("circle")
+    .style("fill", "none")
+    .style("stroke", "brown")
+    .style("stroke-width", 1)
+    .attr("r", 0)
+    .transition()
+    .duration(500)
+    .attr("r", 100)
+    
+    function pointsOnCircle(shapeType,inc) {
+	var circx = 100 * Math.cos(15 * inc);
+	var circy = 100 * Math.sin(15 * inc);
+	return ((-1*(shapeMeasures[shapeType]["myWidth"]/2)) + circx)+","+(circy + (-1*(shapeMeasures[shapeType]["myHeight"]/2)));
+    }
+    
+    var possibleShapes = ["Inspiration", "Final", "Draft", "Sketch", "Idea"]
+    d3.select("#genNode").selectAll("path.options").data(possibleShapes)
+    .enter()
+    .append("path")
+    .attr("class", function(p){ return "options " + p; })
+    .attr("d", function(p) {
+	return shapeMeasures[p]["pathd"]
+    })
+    .attr("transform", function(p) { 
+		    return "translate(" + (-1*(shapeMeasures[p]["myWidth"]/2)) + "," + (-1*(shapeMeasures[p]["myHeight"]/2)) + ")scale(.1)"; 
+    })
+    .transition()
+    .duration(500)
+    .attr("scale",1)
+    .attr("transform", function (p,q) {return "translate("+ pointsOnCircle(p,q) + ")scale(1)"})
+}
+
+function moveGenNode(d,i) {
+    var curMouse = d3.mouse(this);
+    d3.select("#genNode")
+    .attr("transform","translate("+curMouse[0]+","+curMouse[1]+")")
+    
+    d3.select("#genLine")
+    .attr("x2", curMouse[0])
+    .attr("y2", curMouse[1])
+    
+}
+	
     </script>
     
     
