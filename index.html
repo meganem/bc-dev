@@ -4,11 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Testing linking to Drupal Json</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="jquery-1.10.2.min.js"></script>
 <script src="d3.v2.min.js"></script>
+<script src="bloomcase_layout.js"></script>
 </head>
 
 <body>
+<div id="modalOptions" style="position:fixed;left:100px;right:200px;background:red;height:100px;width:100px;display:none;">Options!</div>
 <h1>Testing linking to Drupal Json</h1>
 
 <svg id="timeline">
@@ -386,10 +388,17 @@
             // * * * DRAW THE MAP * * *
     
             // draw the SVG
+	        bloomZoom = d3.behavior.zoom()
+	        .on("zoom", redraw);
+
             var svg = d3.select("#timeline")
 		.attr("id", "mainSVG")
                 .attr("width", chartWidth)
-                .attr("height", chartHeight);
+                .attr("height", chartHeight)
+		.call(bloomZoom);
+		
+	    
+	    var bloomG = svg.append("g").attr("id", "bloomG");
     
             force = d3.layout.force()
                 .gravity(.06)
@@ -403,7 +412,7 @@
                 .links(links) // target links data
                 .start();
     
-            var link = svg.selectAll(".link")
+            var link = bloomG.selectAll(".link")
                 .data(links) // target links data
                 .enter().append("path")
                 .attr("class", "link")
@@ -412,7 +421,7 @@
 	    link.transition().delay(1000).duration(500).style("opacity", 1)
 
     
-            var node = svg.selectAll(".node")
+            var node = bloomG.selectAll(".node")
                 .data(finalNodes) // target nodes data
                 .enter().append("g")
                 .attr("class", "node")
@@ -542,7 +551,7 @@ function startMove(d,i) {
     .style("stroke-width", 3)
     d3.select("#mainSVG").append("g")
     .attr("id","genNode")
-    .on("click", function() {d3.select("#genNode").remove();d3.select("#genLine").remove()})
+    .on("click", function() {d3.select("#modalOptions").style("display","block");d3.select("#genNode").remove();d3.select("#genLine").remove()})
     .attr("transform","translate("+curMouse[0]+","+curMouse[1]+")").append("circle").attr("r","1").style("fill", "lightgray").style("opacity", 0).transition().duration(300).style("opacity",1).attr("r",20)
 
 }
@@ -597,7 +606,11 @@ function moveGenNode(d,i) {
     .attr("y2", curMouse[1])
     
 }
-	
+
+function redraw() {
+//    d3.select("#bloomG").attr("transform", "translate("+bloomZoom.translate()[0]+",0)");
+}
+
     </script>
     
     
