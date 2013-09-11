@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Bloomcase Layout</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
-<script src="d3.v2.min.js"></script>
+<script src="d3.v3.min.js"></script>
 <script src="bloomcase_layout.js"></script>
 </head>
 
@@ -20,6 +20,9 @@
 <script>
 function drawBloomcase() {
 
+    rowSize = 50;
+    columnSize = 25;
+    
     newNodes = {};
     testLayout = new d3_layout_bloomcase();
     d3.json("new8.json", function(data) {newNodes = data;
@@ -27,20 +30,56 @@ function drawBloomcase() {
     testLayout.nodes(newNodes.nodes);
     
     d3.select("svg").append("g").attr("id", "bloomG");
+    
+    var line = d3.svg.line()
+    .interpolate("basis-open")
+    .tension(0.2);
+    
+    var curvyLine = function(startPoint,endPoint) {
 
-    d3.select("#bloomG").selectAll("line").data(testLayout.links()).enter().append("line")
-    .attr("x1", 30)
-    .attr("x2", 30)
-    .attr("y1", function(d,i) {return 200 + (d.source.row * 40)})
-    .attr("y2", function(d,i) {return 200 + (d.target.row * 40)})
+	var xStep = (endPoint[0] - startPoint[0]);
+	var yStep = (endPoint[1] - startPoint[1]);
+//	xStep = 5;
+//	yStep = 10;
+	//M188,538 c 188,0 0,-188 188,-188
+	
+	if (startPoint[1] < endPoint[1]) {
+	return "M" + startPoint[0] + "," + startPoint[1] + "c" + yStep + ",0 0," + (xStep) + " " + xStep + "," + yStep;
+	}
+	else if (startPoint[1] > endPoint[1]) {
+	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep) + ",0 0," + (yStep) + " " + xStep + "," + yStep;
+	    
+	}
+	else {
+	return "M" + startPoint[0] + "," + startPoint[1] + "c0,0 "+xStep+"," + (yStep) + " " + xStep + "," + yStep;
+	}
+    }
+
+    d3.select("#bloomG").selectAll("path.connections").data(testLayout.links()).enter().append("path")
     .style("stroke", "black")
+    .attr("class", "connections")
     .style("stroke-width", 2)
+    .style("fill", "none")
+    .attr("d", function(d) {return "M"+rowSize+"," + (200 + (d.source.row * rowSize)) + "c0,0 0,0 0,0"})
     .transition()
     .duration(1000)
-    .attr("x1", function(d,i) {return d.source.column * 25})
-    .attr("x2", function(d,i) {return d.target.column * 25}) 
-    .attr("y1", function(d,i) {return 200 + (d.source.row * 40)})
-    .attr("y2", function(d,i) {return 200 + (d.target.row * 40)})
+    .attr("d", function(d) {return curvyLine([d.source.column * columnSize, (200 + d.source.row * rowSize)],[d.target.column * columnSize, (200 + d.target.row * rowSize)]) });
+
+
+    d3.select("#bloomG").selectAll("line").data(testLayout.links()).enter().append("line")
+    .attr("x1", rowSize)
+    .attr("x2", rowSize)
+    .attr("y1", function(d,i) {return 200 + (d.source.row * rowSize)})
+    .attr("y2", function(d,i) {return 200 + (d.target.row * rowSize)})
+    .style("stroke", "black")
+    .style("stroke-width", 2)
+    .style("opacity", 0)
+    .transition()
+    .duration(1000)
+    .attr("x1", function(d,i) {return d.source.column * columnSize})
+    .attr("x2", function(d,i) {return d.target.column * columnSize}) 
+    .attr("y1", function(d,i) {return 200 + (d.source.row * rowSize)})
+    .attr("y2", function(d,i) {return 200 + (d.target.row * rowSize)})
 
 
     
@@ -48,7 +87,7 @@ function drawBloomcase() {
     .style("display", function(d) {return d.isMeta ? "none" : "block"})
     .attr("width", 20)
     .attr("height", 20)
-    .attr("transform", function(d,i) {return "translate(30,"+ (200 + (d.row * 40)) +")"})
+    .attr("transform", function(d,i) {return "translate(30,"+ (200 + (d.row * rowSize)) +")"})
     
     secG.append("path")
     .attr("class", function(d){ return d.kind; })
@@ -66,7 +105,7 @@ function drawBloomcase() {
                 .text(function(d) { return d.nid });
     
     secG.transition().duration(1000)
-    .attr("transform", function(d,i) {return "translate("+ (d.column * 25) +","+ (200 + (d.row * 40)) +")"})
+    .attr("transform", function(d,i) {return "translate("+ (d.column * columnSize) +","+ (200 + (d.row * rowSize)) +")"})
     
 
     });
