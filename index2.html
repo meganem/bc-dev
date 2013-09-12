@@ -39,15 +39,21 @@ function drawBloomcase() {
 
 	var xStep = (endPoint[0] - startPoint[0]);
 	var yStep = (endPoint[1] - startPoint[1]);
+	var xyDiff = Math.abs(yStep) - rowSize;
+	var firstDiff = xyDiff * .375;
+	var secDiff = xyDiff * .17;
+	
 //	xStep = 5;
 //	yStep = 10;
 	//M188,538 c 188,0 0,-188 188,-188
 	
 	if (startPoint[1] < endPoint[1]) {
-	return "M" + startPoint[0] + "," + startPoint[1] + "c" + yStep + ",0 0," + (xStep) + " " + xStep + "," + yStep;
+//	return "M" + startPoint[0] + "," + startPoint[1] + "c" + yStep + ",0 0," + (xStep) + " " + xStep + "," + yStep;
+	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep + firstDiff) + ",0 " + (-secDiff) + ","+ (yStep) + " " + xStep + "," + yStep;
 	}
 	else if (startPoint[1] > endPoint[1]) {
-	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep) + ",0 0," + (yStep) + " " + xStep + "," + yStep;
+//	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep) + ",0 0," + (yStep) + " " + xStep + "," + yStep;
+	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep + firstDiff) + ",0 " + (-secDiff) + ","+ (yStep) + " " + xStep + "," + yStep;
 	    
 	}
 	else {
