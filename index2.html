@@ -18,23 +18,26 @@
 </div>
 
 <script>
-function drawBloomcase() {
 
     rowSize = 50;
     columnSize = 25;
+    updatingNode = {};
+
+function drawBloomcase() {
     
     newNodes = {};
     testLayout = new d3_layout_bloomcase();
-    d3.json("new8.json", function(data) {newNodes = data;
-    
+    d3.json("new8.json", function(data) {
+    newNodes = data;
     testLayout.nodes(newNodes.nodes);
     
-    d3.select("svg").append("g").attr("id", "bloomG");
+    d3.select("svg").append("g").attr("id", "bloomG");    
+
+    drawBC(testLayout.nodes(),testLayout.links());
+    });
     
-    var line = d3.svg.line()
-    .interpolate("basis-open")
-    .tension(0.2);
-    
+}
+
     var curvyLine = function(startPoint,endPoint) {
 
 	var xStep = (endPoint[0] - startPoint[0]);
@@ -42,17 +45,11 @@ function drawBloomcase() {
 	var xyDiff = Math.abs(yStep) - rowSize;
 	var firstDiff = xyDiff * .375;
 	var secDiff = xyDiff * .17;
-	
-//	xStep = 5;
-//	yStep = 10;
-	//M188,538 c 188,0 0,-188 188,-188
-	
+		
 	if (startPoint[1] < endPoint[1]) {
-//	return "M" + startPoint[0] + "," + startPoint[1] + "c" + yStep + ",0 0," + (xStep) + " " + xStep + "," + yStep;
 	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep + firstDiff) + ",0 " + (-secDiff) + ","+ (yStep) + " " + xStep + "," + yStep;
 	}
 	else if (startPoint[1] > endPoint[1]) {
-//	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep) + ",0 0," + (yStep) + " " + xStep + "," + yStep;
 	return "M" + startPoint[0] + "," + startPoint[1] + "c" + (xStep + firstDiff) + ",0 " + (-secDiff) + ","+ (yStep) + " " + xStep + "," + yStep;
 	    
 	}
@@ -60,40 +57,25 @@ function drawBloomcase() {
 	return "M" + startPoint[0] + "," + startPoint[1] + "c0,0 "+xStep+"," + (yStep) + " " + xStep + "," + yStep;
 	}
     }
-
-    d3.select("#bloomG").selectAll("path.connections").data(testLayout.links()).enter().append("path")
+    
+function drawBC(nodeData,linkData) {
+    d3.selectAll("path.connections").remove();
+    d3.selectAll("g.sec").remove();
+    
+    d3.select("#bloomG").selectAll("path.connections").data(linkData).enter().append("path")
     .style("stroke", "black")
     .attr("class", "connections")
     .style("stroke-width", 2)
     .style("fill", "none")
-    .attr("d", function(d) {return "M"+rowSize+"," + (200 + (d.source.row * rowSize)) + "c0,0 0,0 0,0"})
-    .transition()
-    .duration(1000)
-    .attr("d", function(d) {return curvyLine([d.source.column * columnSize, (200 + d.source.row * rowSize)],[d.target.column * columnSize, (200 + d.target.row * rowSize)]) });
-
-
-    d3.select("#bloomG").selectAll("line").data(testLayout.links()).enter().append("line")
-    .attr("x1", rowSize)
-    .attr("x2", rowSize)
-    .attr("y1", function(d,i) {return 200 + (d.source.row * rowSize)})
-    .attr("y2", function(d,i) {return 200 + (d.target.row * rowSize)})
-    .style("stroke", "black")
-    .style("stroke-width", 2)
-    .style("opacity", 0)
-    .transition()
-    .duration(1000)
-    .attr("x1", function(d,i) {return d.source.column * columnSize})
-    .attr("x2", function(d,i) {return d.target.column * columnSize}) 
-    .attr("y1", function(d,i) {return 200 + (d.source.row * rowSize)})
-    .attr("y2", function(d,i) {return 200 + (d.target.row * rowSize)})
-
-
+    .attr("d", function(d) {return "M"+rowSize+"," + (200) + "c0,0 0,0 0,0"})
     
-    var secG = d3.select("#bloomG").selectAll("g.sec").data(testLayout.nodes()).enter().append("g")
+    var secG = d3.select("#bloomG").selectAll("g.sec").data(nodeData).enter().append("g")
     .style("display", function(d) {return d.isMeta ? "none" : "block"})
-    .attr("width", 20)
-    .attr("height", 20)
-    .attr("transform", function(d,i) {return "translate(30,"+ (200 + (d.row * rowSize)) +")"})
+    .attr("class", "sec")
+    .attr("transform", function(d,i) {return "translate(30,200)"})
+    .on("mousedown", startMove)
+    .on("mouseup", endMove)
+
     
     secG.append("path")
     .attr("class", function(d){ return d.kind; })
@@ -109,30 +91,35 @@ function drawBloomcase() {
                 .attr("text-anchor", "middle")
                 .style("fill", "white")
                 .text(function(d) { return d.nid });
-    
-    secG.transition().duration(1000)
-    .attr("transform", function(d,i) {return "translate("+ (d.column * columnSize) +","+ (200 + (d.row * rowSize)) +")"})
-    
-
-    });
-    
+		
+    redrawBC();
 }
 
+function redrawBC() {
+    d3.selectAll("g.sec").transition().duration(1000)
+    .attr("transform", function(d,i) {return "translate("+ (d.column * columnSize) +","+ (200 + (d.row * rowSize)) +")"})
+    
+    d3.selectAll("path.connections").transition()
+    .duration(1000)
+    .attr("d", function(d) {return curvyLine([d.source.column * columnSize, (200 + d.source.row * rowSize)],[d.target.column * columnSize, (200 + d.target.row * rowSize)]) });
+
+}
 
 function startMove(d,i) {
     if (!d3.select("#genNode").empty()) {return;}
+    updatingNode = d;
     var curMouse = d3.mouse(this.parentNode);
-    d3.select("#mainSVG").on("mousemove", moveGenNode)
-    d3.select("#mainSVG").on("mouseup", endMove)
-    d3.select("#mainSVG").append("line")
+    d3.select("#bloomG").on("mousemove", moveGenNode)
+    d3.select("#bloomG").on("mouseup", endMove)
+    d3.select("#bloomG").append("line")
     .attr("id", "genLine")
-    .attr("x1", d.x)
-    .attr("y1", d.y)
+    .attr("x1", d.column * columnSize)
+    .attr("y1", (200 + d.row * rowSize))
     .attr("x2", curMouse[0])
     .attr("y2", curMouse[1])
     .style("stroke", "gray")
     .style("stroke-width", 3)
-    d3.select("#mainSVG").append("g")
+    d3.select("#bloomG").append("g")
     .attr("id","genNode")
     .on("click", function() {d3.select("#modalOptions").style("display","block");d3.select("#genNode").remove();d3.select("#genLine").remove()})
     .attr("transform","translate("+curMouse[0]+","+curMouse[1]+")").append("circle").attr("r","1").style("fill", "lightgray").style("opacity", 0).transition().duration(300).style("opacity",1).attr("r",20)
@@ -144,7 +131,7 @@ function endMove(d,i) {
 
     var curMouse = d3.mouse(this);
 
-    d3.select("#mainSVG").on("mousemove", null)
+    d3.select("#bloomG").on("mousemove", null)
     
     d3.select("#genNode")
     .append("circle")
@@ -171,12 +158,46 @@ function endMove(d,i) {
 	return shapeMeasures[p]["pathd"]
     })
     .attr("transform", function(p) { 
-		    return "translate(" + (-1*(shapeMeasures[p]["myWidth"]/2)) + "," + (-1*(shapeMeasures[p]["myHeight"]/2)) + ")scale(.1)"; 
+	return "translate(" + (-1*(shapeMeasures[p]["myWidth"]/2)) + "," + (-1*(shapeMeasures[p]["myHeight"]/2)) + ")scale(.1)"; 
     })
+    .on("click", function(p) {createNewNode(p,d)})
     .transition()
     .duration(500)
     .attr("scale",1)
     .attr("transform", function (p,q) {return "translate("+ pointsOnCircle(p,q) + ")scale(1)"})
+}
+
+function createNewNode(d,i) {
+    console.log("create")
+    var genLineX1 = parseInt(d3.select("#genLine").attr("x1"))
+    var genLineX2 = parseInt(d3.select("#genLine").attr("x2"))
+    var forBack = genLineX2 - genLineX1;
+    var evolvedVal = "";
+    var newNodeID = "100" + testLayout.nodes().length;
+    if (forBack > 0) {
+	evolvedVal = updatingNode.nid;
+    }
+    else {
+	updatingNode.evolvedFrom.length == 0 ? updatingNode.evolvedFrom = newNodeID : updatingNode.evolvedFrom += ("," + newNodeID)
+    }
+    
+    var newNode = {nid: newNodeID,
+    kind: d, datetime: testLayout.nodes()[0].datetime,
+    timestamp: testLayout.nodes()[0].timestamp,
+    row: -1,
+    column: -1,
+    isMeta: false,
+    evolvedFrom: evolvedVal}
+    
+    testLayout.nodes().push(newNode)
+    newNodeArray = testLayout.nodes().filter(function(el) {return el.isMeta ? null : this});
+    
+    freshLayout = new d3_layout_bloomcase();
+    freshLayout.nodes(newNodeArray);
+    
+    drawBC(freshLayout.nodes(),freshLayout.links())
+//    testLayout.nodes(newNodeArray);
+//    redrawBC();
 }
 
 function moveGenNode(d,i) {
@@ -190,9 +211,6 @@ function moveGenNode(d,i) {
     
 }
 
-function redraw() {
-//    d3.select("#bloomG").attr("transform", "translate("+bloomZoom.translate()[0]+",0)");
-}
 
     </script>
     
